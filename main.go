@@ -40,6 +40,8 @@ var PendingTransactions []Transaction
 var mutex = &sync.Mutex{}
 var Wallets = make(map[string]*Wallet)
 
+const FIXED_MINING_REWARD = 10
+
 // CalculateHash generates a SHA-256 hash for a block
 func CalculateHash(block Block) string {
 	data := strconv.Itoa(block.Index) + block.Timestamp + fmt.Sprintf("%v", block.Transactions) + block.PrevHash + strconv.Itoa(block.Nonce) + strconv.Itoa(block.Difficulty)
@@ -82,7 +84,7 @@ func GenerateBlock(oldBlock Block) Block {
 	if _, exists := Wallets[minerAddress]; !exists {
 		Wallets[minerAddress] = &Wallet{Address: minerAddress, Balance: 0}
 	}
-	Wallets[minerAddress].Balance += 10 // Fixed mining reward
+	Wallets[minerAddress].Balance += FIXED_MINING_REWARD
 	mutex.Unlock()
 
 	return newBlock
@@ -114,7 +116,7 @@ func addTransaction(sender, receiver string, amount float64) {
 
 func mineBlock() {
 	mutex.Lock()
-	lastBlock := Blockchain[len(Blockchain)-1] // Copy last block while locked
+	lastBlock := Blockchain[len(Blockchain)-1]
 	mutex.Unlock()
 
 	newBlock := GenerateBlock(lastBlock) // No lock inside GenerateBlock
