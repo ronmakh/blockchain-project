@@ -1,9 +1,10 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"blockchain-project/handler"
+
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter() *gin.Engine {
@@ -14,7 +15,7 @@ func SetupRouter() *gin.Engine {
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		AllowCredentials: true,
-	  }))
+	}))
 
 	r.POST("/transaction", handler.HandleTransaction)
 	r.GET("/mine", handler.HandleMine)
